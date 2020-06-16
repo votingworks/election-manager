@@ -159,7 +159,7 @@ const ballotMetadata = ({
     ['bs', ballotStyleId],
     ['p', `${pageNumber}-${pageCount}`],
   ])
-  return new URL(`https://vx.vote/?${params}`).toString()
+  return new URL(`https://track.vote/?${params}`).toString()
 }
 
 const CandidateContestChoices = ({
