@@ -17,7 +17,10 @@ import {
   VotesDict,
   withLocale,
   YesNoContest,
+  LocaleMap,
 } from '@votingworks/ballot-encoder'
+
+import defaultBallotTranslationStrings from '../data/defaultBallotTranslationStrings.json'
 
 import AppContext from '../contexts/AppContext'
 
@@ -37,6 +40,10 @@ import QRCode from './QRCode'
 import Prose from './Prose'
 import Text from './Text'
 import HorizontalRule from './HorizontalRule'
+
+const defaultBallotStrings = defaultBallotTranslationStrings as LocaleMap<{
+  [key: string]: string
+}>
 
 const localeDateLong = (dateString: string, locale: string) =>
   moment(new Date(dateString)).locale(locale).format('LL')
@@ -393,9 +400,15 @@ const HandMarkedPaperBallot = ({
   const localeElection: OptionalElection = secondaryLocaleCode
     ? withLocale(election, secondaryLocaleCode)
     : undefined
-  i18n.addResources(DEFAULT_LOCALE, '', election.ballotStrings)
+  i18n.addResources(DEFAULT_LOCALE, 'translation', {
+    ...defaultBallotStrings[DEFAULT_LOCALE],
+    ...election.ballotStrings,
+  })
   if (localeElection) {
-    i18n.addResources(secondaryLocaleCode, '', localeElection.ballotStrings)
+    i18n.addResources(secondaryLocaleCode, 'translation', {
+      ...defaultBallotStrings[secondaryLocaleCode],
+      ...localeElection.ballotStrings,
+    })
   }
   const primaryPartyName = getPartyFullNameFromBallotStyle({
     ballotStyleId,
