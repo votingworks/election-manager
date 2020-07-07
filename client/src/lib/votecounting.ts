@@ -1,5 +1,13 @@
 // eslint-disable-next-line import/no-cycle
 import {
+  Party,
+  YesNoVote,
+  Candidate,
+  CandidateVote,
+  Election,
+  VotesDict,
+} from '@votingworks/ballot-encoder'
+import {
   ContestOption,
   ContestOptionTally,
   Dictionary,
@@ -8,14 +16,6 @@ import {
   VotesByPrecinct,
   CastVoteRecord,
 } from '../config/types'
-import {
-  Party,
-  YesNoVote,
-  Candidate,
-  CandidateVote,
-  Election,
-  VotesDict,
-} from '@votingworks/ballot-encoder'
 
 import find from '../utils/find'
 
@@ -119,7 +119,7 @@ export function tallyVotes({ election, precinctId, votes }: TallyParams) {
         })
         optionTally.tally += 1
       } else {
-        ; (selected as CandidateVote).forEach(selectedOption => {
+        ;(selected as CandidateVote).forEach(selectedOption => {
           const optionTally = find(tallies, optionTally => {
             const candidateOption = optionTally.option as Candidate
             const selectedCandidateOption = selectedOption as Candidate
@@ -174,12 +174,15 @@ interface FullTallyParams {
   votesByPrecinct: VotesByPrecinct
 }
 
-export function fullTallyVotes({ election, votesByPrecinct }: FullTallyParams): FullElectionTally {
+export function fullTallyVotes({
+  election,
+  votesByPrecinct,
+}: FullTallyParams): FullElectionTally {
   const precinctTallies: Dictionary<ElectionTally> = {}
 
   let allVotes: VotesDict[] = []
 
-  for (let precinctId in votesByPrecinct) {
+  for (const precinctId in votesByPrecinct) {
     const votes = votesByPrecinct[precinctId]!
     precinctTallies[precinctId] = tallyVotes({ election, precinctId, votes })
     allVotes = [...allVotes, ...votes]

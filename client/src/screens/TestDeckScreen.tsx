@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
-import { routerPaths } from '../components/ElectionManager'
 import {
   CandidateContest,
   Election,
@@ -9,6 +8,7 @@ import {
   getPrecinctById,
   Precinct,
 } from '@votingworks/ballot-encoder'
+import routerPaths from '../routerPaths'
 
 import AppContext from '../contexts/AppContext'
 
@@ -24,7 +24,7 @@ import LinkButton from '../components/LinkButton'
 import { PrecinctReportScreenProps } from '../config/types'
 
 const ElectionTallyReport = styled.div`
-    page-break-before: always;
+  page-break-before: always;
 `
 
 interface GenerateTestDeckParams {
@@ -37,10 +37,10 @@ const generateTestDeckBallots = ({
   precinctId,
 }: GenerateTestDeckParams) => {
   const precincts: string[] = precinctId
-			    ? [precinctId]
-			    : election.precincts.map(p => p.id)
+    ? [precinctId]
+    : election.precincts.map(p => p.id)
 
-  let votes: VotesDict[] = []
+  const votes: VotesDict[] = []
 
   precincts.forEach(precinctId => {
     const precinct = find(election.precincts, p => p.id === precinctId)
@@ -52,7 +52,7 @@ const generateTestDeckBallots = ({
       const contests = election.contests.filter(
         c =>
           ballotStyle.districts.includes(c.districtId) &&
-           ballotStyle.partyId === c.partyId
+          ballotStyle.partyId === c.partyId
       )
 
       const numBallots = Math.max(
@@ -62,7 +62,7 @@ const generateTestDeckBallots = ({
       )
 
       for (let ballotNum = 0; ballotNum < numBallots; ballotNum++) {
-        let oneBallot: VotesDict = {}
+        const oneBallot: VotesDict = {}
         contests.forEach(contest => {
           if (contest.type === 'yesno') {
             oneBallot[contest.id] = ballotNum % 2 === 0 ? 'yes' : 'no'
@@ -83,7 +83,8 @@ const generateTestDeckBallots = ({
 }
 
 const allPrecincts: Precinct = {
-  id: '', name: 'All Precincts'
+  id: '',
+  name: 'All Precincts',
 }
 
 const TestDeckScreen = () => {
@@ -92,12 +93,17 @@ const TestDeckScreen = () => {
   const { precinctId: p = '' } = useParams<PrecinctReportScreenProps>()
   const precinctId = p.trim()
 
-  const precinct = precinctId === 'all'
-		 ? allPrecincts
-		 : getPrecinctById({ election, precinctId })
+  const precinct =
+    precinctId === 'all'
+      ? allPrecincts
+      : getPrecinctById({ election, precinctId })
 
   const votes = generateTestDeckBallots({ election, precinctId: precinct?.id })
-  const electionTally = tallyVotes({ election, precinctId: precinct?.id, votes })
+  const electionTally = tallyVotes({
+    election,
+    precinctId: precinct?.id,
+    votes,
+  })
 
   const ballotStylePartyIds = Array.from(
     new Set(election.ballotStyles.map(bs => bs.partyId))
@@ -109,7 +115,7 @@ const TestDeckScreen = () => {
     return (
       <React.Fragment>
         <NavigationScreen>
-          <Prose >
+          <Prose>
             <h1>{pageTitle}</h1>
             <p>
               <strong>Election:</strong> {election.title}
@@ -117,9 +123,7 @@ const TestDeckScreen = () => {
               <strong>Precinct:</strong> {precinct.name}
             </p>
             <p>
-              <PrintButton primary>
-                Print Results Report
-              </PrintButton>
+              <PrintButton primary>Print Results Report</PrintButton>
             </p>
             <p>
               <LinkButton small to={routerPaths.testDecksTally}>
@@ -136,9 +140,7 @@ const TestDeckScreen = () => {
               electionTally,
               party,
             })
-            const electionTitle = `${party ? party.name : ''} ${
-              election.title
-              }`
+            const electionTitle = `${party ? party.name : ''} ${election.title}`
             return (
               <ElectionTallyReport key={partyId || 'no-party'}>
                 <h1>{pageTitle}</h1>
@@ -165,7 +167,7 @@ const TestDeckScreen = () => {
         <h1>{pageTitle}</h1>
         <p>
           Select desired precinct for <strong>{election.title}</strong>.
-      </p>
+        </p>
       </Prose>
       <p>
         <LinkButton

@@ -1,8 +1,6 @@
 import React, { useContext } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
-import { BallotScreenProps, PrecinctReportScreenProps } from '../config/types'
-
 import AppContext from '../contexts/AppContext'
 
 import ElectionEditDefinitionScreen from '../screens/ElectionEditDefinitionScreen'
@@ -14,27 +12,7 @@ import TestDeckScreen from '../screens/TestDeckScreen'
 import TallyScreen from '../screens/TallyScreen'
 import TallyReportScreen from '../screens/TallyReportScreen'
 
-export const routerPaths = {
-  root: '/',
-  electionDefinition: '/definition',
-  ballotsList: '/ballots',
-  ballotsView: ({ ballotStyleId, precinctId }: BallotScreenProps) =>
-    `/ballots/style/${ballotStyleId}/precinct/${precinctId}`,
-  ballotsViewLanguage: ({
-    ballotStyleId,
-    precinctId,
-    localeCode,
-  }: BallotScreenProps) =>
-    `/ballots/style/${ballotStyleId}/precinct/${precinctId}/language/${localeCode}`,
-  tally: `/tally`,
-  tallyReport: ({ precinctId }: PrecinctReportScreenProps) =>
-    `/tally/precinct/${precinctId}`,
-  tallyFullReport: `/tally/full`,
-  testDecksTally: '/tally/test-ballot-deck',
-  testDeckResultsReport: ({ precinctId }: PrecinctReportScreenProps) =>
-    `/tally/test-ballot-deck/${precinctId}`,
-  export: '/export-election-ballot-package',
-}
+import routerPaths from '../routerPaths'
 
 const ElectionManager = () => {
   const { election: e } = useContext(AppContext)
