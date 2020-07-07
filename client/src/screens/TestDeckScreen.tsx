@@ -38,32 +38,32 @@ const generateTestDeckBallots = ({
 }: GenerateTestDeckParams) => {
   const precincts: string[] = precinctId
     ? [precinctId]
-    : election.precincts.map(p => p.id)
+    : election.precincts.map((p) => p.id)
 
   const votes: VotesDict[] = []
 
-  precincts.forEach(precinctId => {
-    const precinct = find(election.precincts, p => p.id === precinctId)
-    const precinctBallotStyles = election.ballotStyles.filter(bs =>
+  precincts.forEach((precinctId) => {
+    const precinct = find(election.precincts, (p) => p.id === precinctId)
+    const precinctBallotStyles = election.ballotStyles.filter((bs) =>
       bs.precincts.includes(precinct.id)
     )
 
-    precinctBallotStyles.forEach(ballotStyle => {
+    precinctBallotStyles.forEach((ballotStyle) => {
       const contests = election.contests.filter(
-        c =>
+        (c) =>
           ballotStyle.districts.includes(c.districtId) &&
           ballotStyle.partyId === c.partyId
       )
 
       const numBallots = Math.max(
-        ...contests.map(c =>
+        ...contests.map((c) =>
           c.type === 'yesno' ? 2 : (c as CandidateContest).candidates.length
         )
       )
 
       for (let ballotNum = 0; ballotNum < numBallots; ballotNum++) {
         const oneBallot: VotesDict = {}
-        contests.forEach(contest => {
+        contests.forEach((contest) => {
           if (contest.type === 'yesno') {
             oneBallot[contest.id] = ballotNum % 2 === 0 ? 'yes' : 'no'
           } else if (contest.candidates.length > 0) {
@@ -104,7 +104,7 @@ const TestDeckScreen = () => {
   })
 
   const ballotStylePartyIds = Array.from(
-    new Set(election.ballotStyles.map(bs => bs.partyId))
+    new Set(election.ballotStyles.map((bs) => bs.partyId))
   )
 
   const pageTitle = 'Test Ballot Deck Tally'
@@ -131,8 +131,8 @@ const TestDeckScreen = () => {
           </Prose>
         </NavigationScreen>
         <div className="print-only">
-          {ballotStylePartyIds.map(partyId => {
-            const party = election.parties.find(p => p.id === partyId)
+          {ballotStylePartyIds.map((partyId) => {
+            const party = election.parties.find((p) => p.id === partyId)
             const electionTallyForParty = filterTalliesByParty({
               election,
               electionTally,
@@ -176,7 +176,7 @@ const TestDeckScreen = () => {
         </LinkButton>
       </p>
       <ButtonList>
-        {election.precincts.map(p => (
+        {election.precincts.map((p) => (
           <LinkButton
             key={p.id}
             to={routerPaths.testDeckResultsReport({ precinctId: p.id })}

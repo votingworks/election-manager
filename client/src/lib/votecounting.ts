@@ -30,8 +30,8 @@ const writeInCandidate: Candidate = {
 export const parseCVRs = (castVoteRecordsString: string) =>
   castVoteRecordsString
     .split('\n')
-    .filter(el => el) // remove empty lines
-    .map(line => JSON.parse(line) as CastVoteRecord)
+    .filter((el) => el) // remove empty lines
+    .map((line) => JSON.parse(line) as CastVoteRecord)
 
 interface VotesByPrecinctParams {
   election: Election
@@ -43,9 +43,9 @@ export function getVotesByPrecinct({
   castVoteRecords,
 }: VotesByPrecinctParams): VotesByPrecinct {
   const votesByPrecinct: VotesByPrecinct = {}
-  castVoteRecords.forEach(CVR => {
+  castVoteRecords.forEach((CVR) => {
     const vote: VotesDict = {}
-    election.contests.forEach(contest => {
+    election.contests.forEach((contest) => {
       if (!CVR[contest.id]) {
         return
       }
@@ -57,10 +57,10 @@ export function getVotesByPrecinct({
       }
 
       if (contest.type === 'candidate') {
-        vote[contest.id] = (CVR[contest.id] as string[]).map(candidateId =>
+        vote[contest.id] = (CVR[contest.id] as string[]).map((candidateId) =>
           find(
             [writeInCandidate, ...contest.candidates],
-            c => c.id === candidateId
+            (c) => c.id === candidateId
           )
         )
       }
@@ -89,7 +89,7 @@ export function tallyVotes({ election, precinctId, votes }: TallyParams) {
     precinctId,
   }
 
-  election.contests.forEach(contest => {
+  election.contests.forEach((contest) => {
     let options: ContestOption[]
     if (contest.type === 'yesno') {
       options = ['yes', 'no']
@@ -98,7 +98,7 @@ export function tallyVotes({ election, precinctId, votes }: TallyParams) {
     }
 
     const tallies: ContestOptionTally[] = options
-      .map(option => {
+      .map((option) => {
         return { option, tally: 0 }
       })
       .concat(
@@ -107,20 +107,20 @@ export function tallyVotes({ election, precinctId, votes }: TallyParams) {
           : []
       )
 
-    votes.forEach(vote => {
+    votes.forEach((vote) => {
       const selected = vote[contest.id]
       if (!selected) {
         return
       }
 
       if (contest.type === 'yesno') {
-        const optionTally = find(tallies, optionTally => {
+        const optionTally = find(tallies, (optionTally) => {
           return optionTally.option === selected
         })
         optionTally.tally += 1
       } else {
-        ;(selected as CandidateVote).forEach(selectedOption => {
-          const optionTally = find(tallies, optionTally => {
+        ;(selected as CandidateVote).forEach((selectedOption) => {
+          const optionTally = find(tallies, (optionTally) => {
             const candidateOption = optionTally.option as Candidate
             const selectedCandidateOption = selectedOption as Candidate
             return candidateOption.id === selectedCandidateOption.id
@@ -152,18 +152,18 @@ export function filterTalliesByParty({
   }
 
   const districts = election.ballotStyles
-    .filter(bs => bs.partyId === party.id)
-    .flatMap(bs => bs.districts)
+    .filter((bs) => bs.partyId === party.id)
+    .flatMap((bs) => bs.districts)
   const contestIds = election.contests
     .filter(
-      contest =>
+      (contest) =>
         districts.includes(contest.districtId) && contest.partyId === party.id
     )
-    .map(contest => contest.id)
+    .map((contest) => contest.id)
 
   return {
     ...electionTally,
-    contestTallies: electionTally.contestTallies.filter(contestTally =>
+    contestTallies: electionTally.contestTallies.filter((contestTally) =>
       contestIds.includes(contestTally.contest.id)
     ),
   }
