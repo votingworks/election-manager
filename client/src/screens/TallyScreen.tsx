@@ -119,8 +119,8 @@ const TallyScreen = () => {
   }, [])
 
   const exportResults = async () => {
-    const CastVoteRecordsString = ([] as CastVoteRecord[])
-      .concat(...castVoteRecordFiles.castVoteRecords)
+    const CastVoteRecordsString = castVoteRecordFiles.castVoteRecords
+      .flat(1)
       .map((c) => JSON.stringify(c))
       .join('\n')
 
