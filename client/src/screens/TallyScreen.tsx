@@ -77,23 +77,16 @@ const TallyScreen = () => {
     !!castVoteRecordFileList.length || !!castVoteRecordFiles.errorFile
 
   const computeVoteCounts = useCallback(() => {
-    if (hasCastVoteRecordFiles) {
-      console.log(castVoteRecordFiles)
-      setVoteCounts(
-        voteCountsByCategory({
-          castVoteRecords: castVoteRecordFiles.castVoteRecords,
-          categorizers: {
-            Precinct: CVRCategorizerByPrecinct,
-            Scanner: CVRCategorizerByScanner,
-          },
-        })
-      )
-    }
-  }, [setVoteCounts, castVoteRecordFiles, hasCastVoteRecordFiles])
-
-  useEffect(() => {
-    computeVoteCounts()
-  }, [computeVoteCounts])
+    setVoteCounts(
+      voteCountsByCategory({
+        castVoteRecords: castVoteRecordFiles.castVoteRecords,
+        categorizers: {
+          Precinct: CVRCategorizerByPrecinct,
+          Scanner: CVRCategorizerByScanner,
+        },
+      })
+    )
+  }, [setVoteCounts, castVoteRecordFiles])
 
   const processCastVoteRecordFiles: InputEventFunction = async (event) => {
     const input = event.currentTarget
@@ -102,6 +95,7 @@ const TallyScreen = () => {
     setIsLoadingCVRFile(true)
     const newCastVoteRecordFiles = await castVoteRecordFiles.addAll(files)
     saveCastVoteRecordFiles(newCastVoteRecordFiles)
+    computeVoteCounts()
     setIsLoadingCVRFile(false)
 
     input.value = ''
