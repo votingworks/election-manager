@@ -12,6 +12,8 @@ import TestDeckScreen from '../screens/TestDeckScreen'
 import TallyScreen from '../screens/TallyScreen'
 import TallyReportScreen from '../screens/TallyReportScreen'
 
+import UserTestingBallotScreen from '../screens/UserTestingBallotScreen'
+
 import routerPaths from '../routerPaths'
 import OvervoteCombinationReportScreen from '../screens/OvervoteCombinationReportScreen'
 
@@ -20,7 +22,7 @@ const ElectionManager = () => {
   const election = e!
 
   if (!election) {
-    return <UnconfiguredScreen />
+    return <UserTestingBallotScreen />
   }
 
   return (
