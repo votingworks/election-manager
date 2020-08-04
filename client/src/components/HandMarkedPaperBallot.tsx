@@ -122,7 +122,8 @@ const ballotMetadata = ({
   primaryLocaleCode: string
   secondaryLocaleCode: string
   ballotId?: string
-}): string => {
+}): string => { 
+  
   const params = new URLSearchParams([
     ['t', `${!isLiveMode ? 't' : '_'}`],
     ['pr', precinctId],
@@ -448,6 +449,8 @@ const HandMarkedPaperBallot = ({
 
   useLayoutEffect(() => {
     const printBallot = printBallotRef?.current
+
+    console.log("printballot", printBallot)
 
     if (!printBallot) {
       return
