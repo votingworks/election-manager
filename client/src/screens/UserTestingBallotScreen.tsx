@@ -30,6 +30,10 @@ const UserTestingBallotScreen = () => {
         </p>
       </NavigationScreen>
       <HandMarkedPaperBallot
+        ballotId={
+          new URL(document.location.toString()).searchParams.get('ballotId') ||
+          undefined
+        }
         ballotStyleId={ballotStyleId}
         election={election}
         isLiveMode
