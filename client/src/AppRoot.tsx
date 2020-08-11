@@ -6,7 +6,7 @@ import { sha256 } from 'js-sha256'
 import {
   Election,
   OptionalElection,
-  parseElection,
+  // parseElection,
 } from '@votingworks/ballot-encoder'
 
 import AppContext from './contexts/AppContext'
@@ -18,6 +18,7 @@ import { Storage } from './utils/Storage'
 
 import ElectionManager from './components/ElectionManager'
 import { SaveElection, OptionalVoteCounts } from './config/types'
+import testElection from './screens/testElection.json'
 
 export interface AppStorage {
   election?: Election
@@ -36,16 +37,20 @@ export const isOfficialResultsKey = 'isOfficialResults'
 const AppRoot = ({ storage }: Props) => {
   const printBallotRef = useRef<HTMLDivElement>(null)
 
-  const getElection = async () => {
-    const election = await storage.get(electionStorageKey)
+  // const getElection = async () => {
+  //   const election = await storage.get(electionStorageKey)
 
-    return election ? parseElection(election) : undefined
-  }
+  //   return election ? parseElection(election) : undefined
+  // }
 
-  const getCVRFiles = async () => storage.get(cvrsStorageKey)
-  const getIsOfficialResults = async () => storage.get(isOfficialResultsKey)
+  // const getCVRFiles = async () => storage.get(cvrsStorageKey)
+  // const getIsOfficialResults = async () => storage.get(isOfficialResultsKey)
 
-  const [election, setElection] = useState<OptionalElection>(undefined)
+  const [election, setElection] = useState<OptionalElection>(
+    undefined
+    // testElection as Election
+  )
+  // console.log({ election })
   const [electionHash, setElectionHash] = useState('')
   const [castVoteRecordFiles, setCastVoteRecordFiles] = useState(
     CastVoteRecordFiles.empty
@@ -60,19 +65,20 @@ const AppRoot = ({ storage }: Props) => {
   useEffect(() => {
     ;(async () => {
       if (!election) {
-        const storageElection = await getElection()
-        if (storageElection) {
-          setElection(storageElection)
-          setElectionHash(sha256(JSON.stringify(storageElection)))
+        // const storageElection = await getElection()
+        const fooElection = testElection as Election
+        if (fooElection) {
+          setElection(fooElection)
+          setElectionHash(sha256(JSON.stringify(fooElection)))
         }
 
-        if (castVoteRecordFiles === CastVoteRecordFiles.empty) {
-          const storageCVRFiles = await getCVRFiles()
-          if (storageCVRFiles) {
-            setCastVoteRecordFiles(CastVoteRecordFiles.import(storageCVRFiles))
-            setIsOfficialResults((await getIsOfficialResults()) || false)
-          }
-        }
+        // if (castVoteRecordFiles === CastVoteRecordFiles.empty) {
+        //   const storageCVRFiles = await getCVRFiles()
+        //   if (storageCVRFiles) {
+        //     setCastVoteRecordFiles(CastVoteRecordFiles.import(storageCVRFiles))
+        //     setIsOfficialResults((await getIsOfficialResults()) || false)
+        //   }
+        // }
       }
     })()
   })
@@ -128,6 +134,7 @@ const AppRoot = ({ storage }: Props) => {
     >
       <ElectionManager />
       <div ref={printBallotRef} />
+      <div id="print-target" />
     </AppContext.Provider>
   )
 }
