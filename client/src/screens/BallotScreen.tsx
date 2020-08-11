@@ -142,6 +142,17 @@ const BallotScreen = () => {
         isLiveMode={isLiveMode}
         precinctId={precinctId}
         locales={locales}
+        votes={{
+          '1': [],
+          '2-disable': [{ id: '22', name: 'Cindy Hyde-Smith' }],
+          '3': [],
+          '4': [],
+          'initiative-65-a': [],
+          'runoffs-question': [],
+          'initiative-65': ['no'],
+          'flag-question': ['no'],
+          '2-override': [],
+        }}
       />
     </React.Fragment>
   )

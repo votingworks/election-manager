@@ -349,7 +349,12 @@ const Instructions = styled.div`
     margin-top: 0;
   }
 `
-const Contest = styled.div`
+interface ContestProps {
+  changed?: boolean
+}
+//    content: ${({ changed = false }) => (changed ? '★' : undefined)};
+const Contest = styled.div<ContestProps>`
+  position: relative;
   margin-bottom: 1em;
   border: 0.05em solid #000000;
   border-top-width: 0.2em;
@@ -358,6 +363,16 @@ const Contest = styled.div`
   page-break-inside: avoid;
   p + h3 {
     margin-top: -0.6em;
+  }
+  &::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0.125in solid transparent;
+    border-color: #000000 #000000 transparent transparent;
+    width: 0;
+    height: 0;
+    content: ${({ changed = false }) => (changed ? "''" : undefined)};
   }
 `
 const ColumnFooter = styled.div`
@@ -661,7 +676,7 @@ const HandMarkedPaperBallot = ({
                 <Prose>
                   <h2>
                     {isLiveMode
-                      ? t('Official Ballot', { lng: locales.primary })
+                      ? t('Adjudicated Ballot #_____', { lng: locales.primary })
                       : t('TEST BALLOT', { lng: locales.primary })}
                   </h2>
                   <h3>
@@ -784,6 +799,10 @@ const HandMarkedPaperBallot = ({
                     key={contest.id}
                     data-contest
                     data-contest-title={contest.title}
+                    changed={
+                      !(votes && votes![contest.id]) ||
+                      (votes && !!votes[`${contest.id}-override`])
+                    } // TODO: Pass `true` if changed during adjudication.
                   >
                     <Prose>
                       <Text small bold>
