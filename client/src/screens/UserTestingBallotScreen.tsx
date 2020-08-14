@@ -17,6 +17,14 @@ const UserTestingBallotScreen = () => {
     primary: 'en-US',
   }
 
+  const params = new URL(document.location.toString()).searchParams
+  const ballotId = params.get('ballotId') || undefined
+  const withSpanish = params.get('spanish') || false
+
+  if (withSpanish) {
+    locales.secondary = 'es-US'
+  }
+
   const precinctName = getPrecinctById({ election, precinctId })?.name
 
   return (
@@ -30,10 +38,7 @@ const UserTestingBallotScreen = () => {
         </p>
       </NavigationScreen>
       <HandMarkedPaperBallot
-        ballotId={
-          new URL(document.location.toString()).searchParams.get('ballotId') ||
-          undefined
-        }
+        ballotId={ballotId}
         ballotStyleId={ballotStyleId}
         election={election}
         isLiveMode
