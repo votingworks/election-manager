@@ -33,7 +33,12 @@ const ElectionManager = () => {
       <Route path={routerPaths.definitionEditor}>
         <DefinitionEditorScreen />
       </Route>
-      <Route path={routerPaths.definitionContest({ contestId: ':contestId' })}>
+      <Route
+        path={[
+          routerPaths.definitionContest({ contestId: ':contestId' }),
+          routerPaths.definitionContests,
+        ]}
+      >
         <DefinitionContestsScreen />
       </Route>
       <Route exact path={routerPaths.ballotsList}>

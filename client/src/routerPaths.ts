@@ -8,6 +8,7 @@ const routerPaths = {
   root: '/',
   electionDefinition: '/definition',
   definitionEditor: '/definition/editor',
+  definitionContests: `/definition/contests`,
   definitionContest: ({ contestId }: { contestId: string }) =>
     `/definition/contests/${contestId}`,
   ballotsList: '/ballots',
