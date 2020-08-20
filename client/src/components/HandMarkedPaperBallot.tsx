@@ -244,6 +244,17 @@ const SealImage = styled.img`
 const Content = styled.div`
   flex: 1;
 `
+const AbsenteeHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.125in;
+  background: #000000;
+  height: 0.25in;
+  text-transform: uppercase;
+  letter-spacing: 0.025in;
+  color: #ffffff;
+`
 const PageFooter = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -497,7 +508,11 @@ const HandMarkedPaperBallot = ({
     }
 
     const ballotStylesheets = [
-      `/ballot/layout-${locales.secondary ? 'dual' : 'single'}-language.css`,
+      `/ballot/${
+        locales.secondary
+          ? 'layout-dual-language.css'
+          : 'layout-single-language.css'
+      }`,
       '/ballot/ballot.css',
     ]
 
@@ -541,6 +556,11 @@ const HandMarkedPaperBallot = ({
   return (
     <React.Fragment>
       <Ballot aria-hidden data-ballot ref={ballotRef}>
+        <div className="ballot-header">
+          <AbsenteeHeader>
+            <Text bold>Absentee Ballot</Text>
+          </AbsenteeHeader>
+        </div>
         <div className="ballot-footer">
           <PageFooter>
             <OfficialInitials>
