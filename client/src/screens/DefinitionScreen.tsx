@@ -6,6 +6,12 @@ import AppContext from '../contexts/AppContext'
 
 import routerPaths from '../routerPaths'
 
+// import {
+//   sortPrecinctsByName,
+//   sortBallotStyleById,
+//   sortDistrictsByName,
+// } from '../utils/election'
+
 import NavigationScreen from '../components/NavigationScreen'
 import LinkButton from '../components/LinkButton'
 import Prose from '../components/Prose'
@@ -48,6 +54,22 @@ const DefinitionScreen = () => {
             <LinkButton to={routerPaths.definitionEditor}>
               JSON Editor
             </LinkButton>
+            {/* <LinkButton to={routerPaths.definitionMetadata}>
+              Metadata
+            </LinkButton>
+            <LinkButton to={routerPaths.definitionParties}>Parties</LinkButton>
+            <LinkButton to={routerPaths.definitionContests}>
+              Contests
+            </LinkButton>
+            <LinkButton to={routerPaths.definitionPrecincts}>
+              Precincts
+            </LinkButton>
+            <LinkButton to={routerPaths.definitionDistricts}>
+              Districts
+            </LinkButton>
+            <LinkButton to={routerPaths.definitionBallotStyles}>
+              BallotStyles
+            </LinkButton> */}
           </p>
           <h2>Metadata</h2>
           <p>
@@ -82,6 +104,42 @@ const DefinitionScreen = () => {
               </p>
             </React.Fragment>
           ))}
+          {/* <h2>Ballot Styles</h2>
+          <p>
+            {election.ballotStyles
+              .sort(sortBallotStyleById)
+              .map((ballotStyle) => (
+                <ButtonListItem key={ballotStyle.id}>
+                  <LinkButton
+                    small
+                    to={routerPaths.definitionBallotStyle({
+                      ballotStyleId: ballotStyle.id,
+                    })}
+                  >
+                    {ballotStyle.id}
+                    {ballotStyle.partyId && ` - ${ballotStyle.partyId}`}
+                  </LinkButton>
+                </ButtonListItem>
+              ))}
+          </p>
+          <h2>Precincts</h2>
+          <ul>
+            {election.precincts.sort(sortPrecinctsByName).map((precinct) => (
+              <li key={precinct.id}>{precinct.name}</li>
+            ))}
+          </ul>
+          <h2>Districts</h2>
+          <ul>
+            {election.districts.sort(sortDistrictsByName).map((district) => (
+              <li key={district.id}>{district.name}</li>
+            ))}
+          </ul>
+          <h2>Parties</h2>
+          <ul>
+            {election.parties.map((party) => (
+              <li key={party.id}>{party.name}</li>
+            ))}
+          </ul> */}
         </Prose>
       </NavigationScreen>
     </React.Fragment>

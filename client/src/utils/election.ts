@@ -1,4 +1,4 @@
-import { Election, BallotStyle } from '@votingworks/ballot-encoder'
+import { Election, BallotStyle, Precinct, District } from '@votingworks/ballot-encoder'
 import dashify from 'dashify'
 import { LANGUAGES } from '../config/globals'
 import { BallotLocale } from '../config/types'
@@ -54,6 +54,19 @@ const sortOptions = {
   ignorePunctuation: true,
   numeric: true,
 }
+
+interface HasName {
+  name: string
+}
+
+export const sortPrecinctsByName = (a: Precinct, b: Precinct) =>
+  a.name.localeCompare(b.name, undefined, sortOptions)
+
+export const sortDistrictsByName = (a: District, b: District) =>
+  a.name.localeCompare(b.name, undefined, sortOptions)
+
+export const sortBallotStyleById = (a: BallotStyle, b: BallotStyle) =>
+  a.id.localeCompare(b.id, undefined, sortOptions)
 
 export const getBallotStylesData = (election: Election) =>
   election.ballotStyles

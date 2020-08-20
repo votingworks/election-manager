@@ -15,7 +15,12 @@ import TallyReportScreen from '../screens/TallyReportScreen'
 import CombineResultsScreen from '../screens/CombineResultsScreen'
 import OvervoteCombinationReportScreen from '../screens/OvervoteCombinationReportScreen'
 import DefinitionEditorScreen from '../screens/DefinitionEditorScreen'
+// import DefinitionMetadataScreen from '../screens/DefinitionMetadataScreen'
+// import DefinitionPartiesScreen from '../screens/DefinitionPartiesScreen'
 import DefinitionContestsScreen from '../screens/DefinitionContestsScreen'
+// import DefinitionPrecinctsScreen from '../screens/DefinitionPrecinctsScreen'
+// import DefinitionDistrictsScreen from '../screens/DefinitionDistrictsScreen'
+// import DefinitionBallotStylesScreen from '../screens/DefinitionBallotStylesScreen'
 
 const ElectionManager = () => {
   const { election: e } = useContext(AppContext)
@@ -33,6 +38,8 @@ const ElectionManager = () => {
       <Route path={routerPaths.definitionEditor}>
         <DefinitionEditorScreen />
       </Route>
+      {/* <Route path={routerPaths.definitionMetadata}> <DefinitionMetadataScreen /> </Route> */}
+      {/* <Route path={routerPaths.definitionParties}> <DefinitionPartiesScreen /> </Route> */}
       <Route
         path={[
           routerPaths.definitionContest({ contestId: ':contestId' }),
@@ -41,6 +48,9 @@ const ElectionManager = () => {
       >
         <DefinitionContestsScreen />
       </Route>
+      {/* <Route path={routerPaths.definitionPrecincts}> <DefinitionPrecinctsScreen /> </Route> */}
+      {/* <Route path={routerPaths.definitionDistricts}> <DefinitionDistrictsScreen /> </Route> */}
+      {/* <Route path={[ routerPaths.definitionBallotStyle({ ballotStyleId: ':ballotStyleId', }), routerPaths.definitionBallotStyles, ]} > <DefinitionBallotStylesScreen /> </Route> */}
       <Route exact path={routerPaths.ballotsList}>
         <BallotListScreen />
       </Route>
@@ -95,7 +105,7 @@ const ElectionManager = () => {
       <Route path={routerPaths.overvoteCombinationReport}>
         <OvervoteCombinationReportScreen />
       </Route>
-      <Redirect to={routerPaths.ballotsList} />
+      <Redirect to={routerPaths.electionDefinition} />
     </Switch>
   )
 }

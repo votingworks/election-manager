@@ -23,9 +23,11 @@ const Prose = styled('div')<Props>`
   }
   & h2 {
     margin: 1.5em 0 0.75em;
+    /* font-size: 1.375em; */
     font-size: 1.25em;
   }
   & h3 {
+    /* font-size: 1.1em; */
     font-size: 1.17em;
   }
   & h4 {

@@ -8,9 +8,19 @@ const routerPaths = {
   root: '/',
   electionDefinition: '/definition',
   definitionEditor: '/definition/editor',
+<<<<<<< HEAD
+=======
+  definitionMetadata: `/definition/metadata`,
+  definitionParties: `/definition/parties`,
+>>>>>>> WIP
   definitionContests: `/definition/contests`,
   definitionContest: ({ contestId }: { contestId: string }) =>
     `/definition/contests/${contestId}`,
+  definitionPrecincts: `/definition/precincts`,
+  definitionDistricts: `/definition/districts`,
+  definitionBallotStyles: `/definition/ballot-styles`,
+  definitionBallotStyle: ({ ballotStyleId }: { ballotStyleId: string }) =>
+    `/definition/ballot-styles/${ballotStyleId}`,
   ballotsList: '/ballots',
   ballotsView: ({ ballotStyleId, precinctId }: BallotScreenProps) =>
     `/ballots/style/${ballotStyleId}/precinct/${precinctId}`,
