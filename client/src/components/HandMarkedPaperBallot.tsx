@@ -244,12 +244,23 @@ const SealImage = styled.img`
 const Content = styled.div`
   flex: 1;
 `
+const AbsenteeFooter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.08in;
+  background: #999999; /* rgb(128, 128, 255) */
+  width: 1in;
+  /* text-transform: uppercase; */
+  /* letter-spacing: 0.025in; */
+  color: #ffffff;
+`
 const PageFooter = styled.div`
   display: flex;
   justify-content: flex-end;
   /* stylelint-disable-next-line selector-class-pattern */
   .pagedjs_left_page & {
-    margin-left: 0.66in;
+    /* margin-left: 0.66in; <-- for RRD QA Code */
   }
 `
 const OfficialInitials = styled.div`
@@ -497,7 +508,11 @@ const HandMarkedPaperBallot = ({
     }
 
     const ballotStylesheets = [
-      `/ballot/layout-${locales.secondary ? 'dual' : 'single'}-language.css`,
+      `/ballot/${
+        locales.secondary
+          ? 'layout-dual-language.css'
+          : 'layout-single-language.css'
+      }`,
       '/ballot/ballot.css',
     ]
 
@@ -543,6 +558,9 @@ const HandMarkedPaperBallot = ({
       <Ballot aria-hidden data-ballot ref={ballotRef}>
         <div className="ballot-footer">
           <PageFooter>
+            <AbsenteeFooter>
+              <Text bold>Absentee Ballot</Text>
+            </AbsenteeFooter>
             <OfficialInitials>
               <Text as="span" small>
                 <Trans
