@@ -52,6 +52,7 @@ export const configuredAtStorageKey = 'configuredAt'
 
 const AppRoot = ({ storage }: Props) => {
   const printBallotRef = useRef<HTMLDivElement>(null)
+  const [isFetchingElection, setIsFetchingElection] = useState(true)
 
   const getElection = async () => {
     const election = await storage.get(electionStorageKey)
@@ -139,14 +140,13 @@ const AppRoot = ({ storage }: Props) => {
   useEffect(() => {
     ;(async () => {
       if (!election) {
+        setIsFetchingElection(true)
         const storageElection = await getElection()
         if (storageElection) {
           setElection(storageElection)
           setElectionHash(sha256(JSON.stringify(storageElection)))
-
           setConfiguredAt((await storage.get(configuredAtStorageKey)) || '')
         }
-
         if (castVoteRecordFiles === CastVoteRecordFiles.empty) {
           const storageCVRFiles = await getCVRFiles()
           if (storageCVRFiles) {
@@ -154,6 +154,7 @@ const AppRoot = ({ storage }: Props) => {
             setIsOfficialResults((await getIsOfficialResults()) || false)
           }
         }
+        setIsFetchingElection(false)
       }
     })()
   })
@@ -195,6 +196,10 @@ const AppRoot = ({ storage }: Props) => {
       storage.set(configuredAtStorageKey, newConfiguredAt)
       setConfiguredAt(newConfiguredAt)
     }
+  }
+
+  if (isFetchingElection) {
+    return null
   }
 
   return (
