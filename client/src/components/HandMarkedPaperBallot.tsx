@@ -239,10 +239,8 @@ const Content = styled.div`
 const PageFooter = styled.div`
   display: flex;
   justify-content: flex-end;
-  /* stylelint-disable-next-line selector-class-pattern */
-  .pagedjs_left_page & {
-    margin-left: 0.66in;
-  }
+
+  /* .pagedjs_left_page & { margin-left: 0.66in; } - RRD QA Code margin */
 `
 const OfficialInitials = styled.div`
   display: none;
