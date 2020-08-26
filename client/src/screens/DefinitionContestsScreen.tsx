@@ -19,7 +19,7 @@ import NavigationScreen from '../components/NavigationScreen'
 import AppContext from '../contexts/AppContext'
 import Button, { SegmentedButton } from '../components/Button'
 import {
-  Contest,
+  StyledContest,
   CandidateContestChoices,
 } from '../components/HandMarkedPaperBallot'
 import Prose from '../components/Prose'
@@ -267,7 +267,7 @@ ${fileContent}`
               <h3>Sample Render</h3>
             </Prose>
             <Paper>
-              <Contest>
+              <StyledContest>
                 <Prose>
                   <Text small bold>
                     {contest.section}
@@ -310,7 +310,7 @@ ${fileContent}`
                     </React.Fragment>
                   )}
                 </Prose>
-              </Contest>
+              </StyledContest>
             </Paper>
           </RenderedContest>
           <div>
