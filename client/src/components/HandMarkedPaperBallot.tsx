@@ -1,12 +1,3 @@
-import { strict as assert } from 'assert'
-import React, { useLayoutEffect, useRef, useContext } from 'react'
-import ReactDOM from 'react-dom'
-import styled from 'styled-components'
-import moment from 'moment'
-import 'moment/min/locales'
-import { Handler, Previewer, registerHandlers } from 'pagedjs'
-import { TFunction, StringMap } from 'i18next'
-import { useTranslation, Trans } from 'react-i18next'
 import {
   BallotStyle,
   CandidateContest,
@@ -19,24 +10,31 @@ import {
   withLocale,
   YesNoContest,
 } from '@votingworks/ballot-encoder'
-
+import { BitWriter, CustomEncoding } from '@votingworks/ballot-encoder/src/bits'
+import { strict as assert } from 'assert'
+import { StringMap, TFunction } from 'i18next'
+import moment from 'moment'
+import 'moment/min/locales'
+import { Handler, Previewer, registerHandlers } from 'pagedjs'
+import React, { useContext, useLayoutEffect, useRef } from 'react'
+import ReactDOM from 'react-dom'
+import { Trans, useTranslation } from 'react-i18next'
+import styled from 'styled-components'
+import { BallotLocale } from '../config/types'
 import AppContext from '../contexts/AppContext'
-
-import findPartyById from '../utils/findPartyById'
 import {
   getBallotStyle,
   getContests,
   getPartyFullNameFromBallotStyle,
   getPrecinctById,
 } from '../utils/election'
-
+import findPartyById from '../utils/findPartyById'
 import BubbleMark from './BubbleMark'
-import WriteInLine from './WriteInLine'
-import QRCode from './QRCode'
-import Prose from './Prose'
-import Text from './Text'
 import HorizontalRule from './HorizontalRule'
-import { BallotLocale } from '../config/types'
+import Prose from './Prose'
+import QRCode from './QRCode'
+import Text from './Text'
+import WriteInLine from './WriteInLine'
 
 const localeDateLong = (dateString: string, locale: string) =>
   moment(new Date(dateString)).locale(locale).format('LL')
@@ -105,6 +103,8 @@ const dualLanguageComposer = (
 }
 
 const ballotMetadata = ({
+  election,
+  electionHash,
   isLiveMode,
   precinctId,
   ballotStyleId,
@@ -114,6 +114,8 @@ const ballotMetadata = ({
   secondaryLocaleCode,
   ballotId,
 }: {
+  election: Election
+  electionHash: string
   isLiveMode: boolean
   precinctId: Precinct['id']
   ballotStyleId: BallotStyle['id']
@@ -122,21 +124,78 @@ const ballotMetadata = ({
   primaryLocaleCode: string
   secondaryLocaleCode: string
   ballotId?: string
-}): string => {
-  const params = new URLSearchParams([
-    ['t', `${!isLiveMode ? 't' : '_'}`],
-    ['pr', precinctId],
-    ['bs', ballotStyleId],
-    ['l1', primaryLocaleCode],
-    ['l2', secondaryLocaleCode],
-    ['p', `${pageNumber}-${pageCount}`],
-  ])
+}): string | Uint8Array => {
+  // const params = new URLSearchParams([
+  //   ['t', `${!isLiveMode ? 't' : '_'}`],
+  //   ['pr', precinctId],
+  //   ['bs', ballotStyleId],
+  //   ['l1', primaryLocaleCode],
+  //   ['l2', secondaryLocaleCode],
+  //   ['p', `${pageNumber}-${pageCount}`],
+  // ])
 
-  if (ballotId) {
-    params.append('id', ballotId)
+  // if (ballotId) {
+  //   params.append('id', ballotId)
+  // }
+
+  // return new URL(`https://ballot.page/?${params}`).toString()
+  console.log(electionHash, electionHash.length)
+  console.log({
+    electionHash,
+    isLiveMode,
+    precinctId,
+    ballotStyleId,
+    pageNumber,
+    pageCount,
+    primaryLocaleCode,
+    secondaryLocaleCode,
+    ballotId,
+  })
+  enum Locale {
+    None = 0,
+    enUS = 1,
+    esUS = 2,
   }
-
-  return new URL(`https://ballot.page/?${params}`).toString()
+  const alnum = new CustomEncoding(
+    '-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  )
+  const bytes = new BitWriter()
+    .writeString(electionHash.slice(0, 20), {
+      encoding: new CustomEncoding('0123456789abcdef'),
+    })
+    .writeBoolean(isLiveMode)
+    .writeUint(
+      election.precincts.findIndex(({ id }) => id === precinctId),
+      { max: election.precincts.length - 1 }
+    )
+    .writeUint(
+      election.ballotStyles.findIndex(({ id }) => id === ballotStyleId),
+      { max: election.ballotStyles.length - 1 }
+    )
+    // .writeString(precinctId, { encoding: alnum })
+    // .writeString(ballotStyleId, { encoding: alnum })
+    .writeString(ballotId ?? '', { encoding: alnum })
+    .writeUint(pageNumber, { max: 7 })
+    // .writeUint8(pageCount as Uint8)
+    .writeUint(
+      primaryLocaleCode === 'en-US'
+        ? Locale.enUS
+        : primaryLocaleCode === 'es-US'
+        ? Locale.esUS
+        : Locale.None,
+      { max: Locale.esUS }
+    )
+    .writeUint(
+      secondaryLocaleCode === 'en-US'
+        ? Locale.enUS
+        : secondaryLocaleCode === 'es-US'
+        ? Locale.esUS
+        : Locale.None,
+      { max: Locale.esUS }
+    )
+    .toUint8Array()
+  console.log(bytes)
+  return bytes
 }
 
 const qrCodeTargetClassName = 'qr-code-target'
@@ -192,6 +251,8 @@ class PostRenderBallotProcessor extends Handler {
         qrCodeTargetClassName
       )[0]
       const {
+        electionJson = '',
+        electionHash = '',
         precinctId = '',
         ballotStyleId = '',
         isLiveMode = '',
@@ -202,8 +263,10 @@ class PostRenderBallotProcessor extends Handler {
       if (qrCodeTarget) {
         ReactDOM.render(
           <QRCode
-            level="L"
+            level="Q"
             value={ballotMetadata({
+              election: JSON.parse(electionJson),
+              electionHash,
               isLiveMode: isLiveMode === 'true',
               precinctId,
               ballotStyleId,
@@ -425,6 +488,7 @@ export const CandidateContestChoices = ({
 interface Props {
   ballotStyleId: string
   election: Election
+  electionHash: string
   isLiveMode?: boolean
   precinctId: string
   locales: BallotLocale
@@ -436,6 +500,7 @@ interface Props {
 const HandMarkedPaperBallot = ({
   ballotStyleId,
   election,
+  electionHash,
   isLiveMode = true,
   precinctId,
   locales,
@@ -506,6 +571,7 @@ const HandMarkedPaperBallot = ({
       onRendered?.({
         ballotStyleId,
         election,
+        electionHash,
         isLiveMode,
         precinctId,
         votes,
@@ -519,6 +585,7 @@ const HandMarkedPaperBallot = ({
   }, [
     ballotStyleId,
     election,
+    electionHash,
     isLiveMode,
     onRendered,
     precinctId,
@@ -624,6 +691,8 @@ const HandMarkedPaperBallot = ({
             <PageFooterQRCode
               className={qrCodeTargetClassName}
               data-is-live-mode={isLiveMode}
+              data-election-json={JSON.stringify(election)}
+              data-election-hash={electionHash}
               data-precinct-id={precinctId}
               data-ballot-style-id={ballotStyleId}
               data-primary-locale-code={locales.primary}

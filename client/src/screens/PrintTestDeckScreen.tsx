@@ -33,12 +33,14 @@ const allPrecincts: Precinct = {
 
 interface TestDeckBallotsParams {
   election: Election
+  electionHash: string
   precinct: Precinct
   onAllRendered: () => void
 }
 
 const TestDeckBallots = ({
   election,
+  electionHash,
   precinct,
   onAllRendered,
 }: TestDeckBallotsParams) => {
@@ -108,6 +110,7 @@ const TestDeckBallots = ({
           key={`ballot-${i}`} // eslint-disable-line react/no-array-index-key
           ballotStyleId={ballot.ballotStyleId as string}
           election={election}
+          electionHash={electionHash}
           isLiveMode
           precinctId={ballot.precinctId as string}
           locales={{ primary: 'en-US' }}
@@ -122,7 +125,7 @@ const TestDeckBallots = ({
 const TestDeckBallotsMemoized = React.memo(TestDeckBallots)
 
 const PrintTestDeckScreen = () => {
-  const { election: e } = useContext(AppContext)
+  const { election: e, electionHash } = useContext(AppContext)
   const election = e!
   const { precinctId: p = '' } = useParams<PrecinctReportScreenProps>()
   const precinctId = p.trim()
@@ -172,6 +175,7 @@ const PrintTestDeckScreen = () => {
         </NavigationScreen>
         <TestDeckBallotsMemoized
           election={election}
+          electionHash={electionHash}
           precinct={precinct}
           onAllRendered={onAllRendered}
         />

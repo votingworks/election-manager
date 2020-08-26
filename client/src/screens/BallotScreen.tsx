@@ -151,6 +151,7 @@ const BallotScreen = () => {
       <HandMarkedPaperBallot
         ballotStyleId={ballotStyleId}
         election={election}
+        electionHash={electionHash}
         isLiveMode={isLiveMode}
         precinctId={precinctId}
         locales={locales}
