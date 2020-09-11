@@ -3,7 +3,7 @@
 FORCE:
 
 build: FORCE
-	yarn --cwd client install && yarn --cwd client build && yarn --cwd prodserver install
+	yarn --cwd apps/client install && yarn --cwd apps/client build && yarn --cwd apps/prodserver install
 
 run:
-	cd prodserver && node index.js
+	cd apps/prodserver && node index.js
