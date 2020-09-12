@@ -1,9 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-import * as GLOBALS from '../config/globals'
-
-interface Props {
+export interface TextProps {
   bold?: boolean
   light?: boolean
   center?: boolean
@@ -23,7 +21,8 @@ interface Props {
   voteIcon?: boolean
 }
 
-const iconStyles = css<Props>`
+const CHECK_ICON = '✓'
+const iconStyles = css<TextProps>`
   &::before {
     display: inline-block;
     margin-top: -0.3em;
@@ -40,11 +39,11 @@ const iconStyles = css<Props>`
     font-size: 90%;
     font-weight: 800;
     content: ${({ warningIcon, voteIcon }) =>
-      (warningIcon && "'!'") ?? (voteIcon && `'${GLOBALS.CHECK_ICON}'`)};
+      (warningIcon && "'!'") ?? (voteIcon && `'${CHECK_ICON}'`)};
   }
 `
 
-const Text = styled('p')<Props>`
+export const Text = styled('p')<TextProps>`
   margin-right: ${({ narrow }) => (narrow ? 'auto' : undefined)};
   margin-left: ${({ narrow }) => (narrow ? 'auto' : undefined)};
   max-width: ${({ narrow }) => (narrow ? '33ch' : undefined)};
@@ -98,5 +97,3 @@ export const NoWrap = styled.span`
 export const Monospace = styled.span`
   font-family: monospace;
 `
-
-export default Text

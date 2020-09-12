@@ -40,5 +40,3 @@ export const BubbleMark = ({ checked = false, children }: Props) => (
     <Content>{children}</Content>
   </Container>
 )
-
-export default BubbleMark
