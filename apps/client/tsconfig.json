@@ -1,5 +1,10 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "test", "types", "../../libs/hmpb-ui/src/global.d.ts"],
+  "include": [
+    "src",
+    "test",
+    "types",
+    "../../libs/hmpb-ui/src/global.d.ts"
+  ],
   "compilerOptions": {}
 }

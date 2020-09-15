@@ -11,6 +11,7 @@
 const path = require('path')
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
+const CopyPlugin = require('copy-webpack-plugin')
 const { pathsToModuleNameMapper } = require('ts-jest/utils')
 const { loadConfig } = require('tsconfig-paths')
 const { join } = require('path')
@@ -20,6 +21,15 @@ module.exports = {
    * @param {import('webpack').Configuration} config
    */
   webpack(config) {
+    config.plugins = [
+      ...(config.plugins || []),
+
+      // Add fonts, seals, and ballot styles from hmpb-ui.
+      new CopyPlugin({
+        patterns: [{ from: join(__dirname, '../../libs/hmpb-ui/public') }],
+      }),
+    ]
+
     const resolvePlugins = (config.resolve && config.resolve.plugins) || []
 
     config.resolve = {
