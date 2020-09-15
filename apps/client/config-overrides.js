@@ -20,30 +20,41 @@ module.exports = {
    * @param {import('webpack').Configuration} config
    */
   webpack(config) {
-    // Remove guard against importing modules outside of `src`.
-    // Needed for workspace projects.
-    config.resolve.plugins = config.resolve.plugins.filter(
-      (plugin) => !(plugin instanceof ModuleScopePlugin)
-    )
+    const resolvePlugins = (config.resolve && config.resolve.plugins) || []
 
-    // Add support for importing workspace projects.
-    config.resolve.plugins.push(
-      new TsconfigPathsPlugin({
-        configFile: path.resolve(__dirname, 'tsconfig.json'),
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        mainFields: ['module', 'main'],
-      })
-    )
+    config.resolve = {
+      ...config.resolve,
+      plugins: [
+        // Remove guard against importing modules outside of `src`.
+        // Needed for workspace projects.
+        ...resolvePlugins.filter(
+          (plugin) => !(plugin instanceof ModuleScopePlugin)
+        ),
 
-    // Replace include option for babel loader with exclude
+        // Add support for importing workspace projects.
+        new TsconfigPathsPlugin({
+          configFile: path.resolve(__dirname, 'tsconfig.json'),
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          mainFields: ['module', 'main'],
+        }),
+      ],
+    }
+
+    // Replace include option for babel-loader with exclude
     // so babel will handle workspace projects as well.
-    for (const r of config.module.rules) {
+    const moduleRules = (config.module && config.module.rules) || []
+    for (const r of moduleRules) {
       if (r.oneOf) {
         const babelLoader = r.oneOf.find(
           (rr) =>
             (Array.isArray(rr.loader) || typeof rr.loader === 'string') &&
             rr.loader.indexOf('babel-loader') !== -1
         )
+
+        if (!babelLoader) {
+          throw new Error('could not find babel-loader module rule')
+        }
+
         babelLoader.exclude = /node_modules/
         delete babelLoader.include
       }
